@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import nltk
 
+# Descarregar les dades necessàries per NLTK
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/wordnet')
@@ -16,11 +17,12 @@ except LookupError:
     nltk.download('stopwords')
     nltk.download('omw-1.4')
 
-
+# Carregar el dataset
 data_path = "data/TripAdvisor_reviews.csv"  
 df = pd.read_csv(data_path)
 print(df.head())
 
+# Funció de neteja del text
 def clean_text(text):
     # Eliminar caracters no ASCII (mantenir només lletres)
     text = re.sub(r"[^\x20-\x7E]", "", text)  # Caràcters ASCII imprimibles
@@ -50,9 +52,15 @@ df["review_full"] = df["review_full"].fillna("").astype(str)
 # Aplicar la funció de neteja a la columna de ressenyes
 df["cleaned_review"] = df["review_full"].apply(clean_text)
 
-# Guardar el dataset netejat en un nou fitxer CSV (opcional)
+# Renombrar la columna 'cleaned_review' a 'review_full' per substituir el contingut original
+df["review_full"] = df["cleaned_review"]
+
+# Eliminar la columna 'cleaned_review' (ja no és necessària)
+df.drop(columns=["cleaned_review"], inplace=True)
+
+# Guardar el dataset netejat en un nou fitxer CSV (només amb les columnes 'rating_review' i 'review_full')
 output_path = "data/cleaned_dataset.csv"
-df.to_csv(output_path, index=False)
+df.to_csv(output_path, index=False, columns=["rating_review", "review_full"])
 
 # Mostrar un exemple de les dades netejades
 print(df.head())
