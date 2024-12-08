@@ -2,7 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 # Carregar les dades des del fitxer CSV
-df = pd.read_csv("C:/Users/smart/personal/uni/enginyeria de dades/3r curs/1r semestre/aprenentatge computacional/proj/TripAdvisor_reviews.csv")
+#df = pd.read_csv("C:/Users/smart/personal/uni/enginyeria de dades/3r curs/1r semestre/aprenentatge computacional/proj/TripAdvisor_reviews.csv")
+df = pd.read_csv("C:/Users/jpall/OneDrive/Documentos/TERCER CURS - 1r semestre/Aprenentatge Computacional/projecte/ACproject-g04/data")
 
 # Suposem que la columna de puntuació és 'score' i la descripció és 'description'
 X = df['review_full']
