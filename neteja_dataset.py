@@ -9,10 +9,12 @@ try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/wordnet')
     nltk.data.find('corpora/stopwords')
+    nltk.data.find('corpora/omw-1.4')
 except LookupError:
     nltk.download('punkt')
     nltk.download('wordnet')
     nltk.download('stopwords')
+    nltk.download('omw-1.4')
 
 
 data_path = "data/TripAdvisor_reviews.csv"  
@@ -41,6 +43,9 @@ def clean_text(text):
     # Reconstruir el text net
     cleaned_text = " ".join(tokens)
     return cleaned_text
+
+# Substituir valors no vàlids (NaN) per una cadena buida
+df["review_full"] = df["review_full"].fillna("").astype(str)
 
 # Aplicar la funció de neteja a la columna de ressenyes
 df["cleaned_review"] = df["review_full"].apply(clean_text)
