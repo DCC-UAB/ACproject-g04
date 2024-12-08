@@ -2,8 +2,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 # Carregar les dades des del fitxer CSV
+<<<<<<< HEAD
 #df = pd.read_csv("C:/Users/smart/personal/uni/enginyeria de dades/3r curs/1r semestre/aprenentatge computacional/proj/TripAdvisor_reviews.csv")
 df = pd.read_csv("C:/Users/jpall/OneDrive/Documentos/TERCER CURS - 1r semestre/Aprenentatge Computacional/projecte/ACproject-g04/data")
+=======
+df = pd.read_csv("data/cleaned_dataset.csv")
+>>>>>>> 2e885c55660d6f4f5271cc907c897b47c9ee9e64
 
 # Suposem que la columna de puntuació és 'score' i la descripció és 'description'
 X = df['review_full']
@@ -27,8 +31,8 @@ val_df = pd.DataFrame({'description': X_val, 'score': y_val})
 test_df = pd.DataFrame({'description': X_test, 'score': y_test})
 
 # Guardar els subconjunts en fitxers CSV
-train_df.to_csv("train_set.csv", index=False)
-val_df.to_csv("val_set.csv", index=False)
-test_df.to_csv("test_set.csv", index=False)
+train_df.to_csv("data/train_set.csv", index=False)
+val_df.to_csv("data/val_set.csv", index=False)
+test_df.to_csv("data/test_set.csv", index=False)
 
 print("Els subconjunts han estat desats amb èxit.")
