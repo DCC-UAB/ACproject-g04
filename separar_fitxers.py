@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 # Carregar les dades des del fitxer CSV
 df = pd.read_csv("data/cleaned_dataset.csv")
 
-# Suposem que la columna de puntuació és 'score' i la descripció és 'description'
+# ENs quedarà la columna de puntuació amb nom 'rating_review' i la de descripció com 'review_full'
 X = df['review_full']
 y = df['rating_review']
 
@@ -25,7 +25,7 @@ train_df = pd.DataFrame({'description': X_train, 'score': y_train})
 val_df = pd.DataFrame({'description': X_val, 'score': y_val})
 test_df = pd.DataFrame({'description': X_test, 'score': y_test})
 
-# Guardar els subconjunts en fitxers CSV
+# Guardar els subconjunts en fitxers CSV, a la carpeta data, (i no es pujaran al git)
 train_df.to_csv("data/train_set.csv", index=False)
 val_df.to_csv("data/val_set.csv", index=False)
 test_df.to_csv("data/test_set.csv", index=False)
