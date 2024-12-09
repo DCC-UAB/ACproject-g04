@@ -1,8 +1,9 @@
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.naive_bayes import MultinomialNB
 
 print("llibreries importades ok")
 
@@ -17,12 +18,14 @@ test = pd.read_csv("data/test_set.csv", encoding='utf-8')
 #print(train['description'].unique())
 print("càrrega arxius ok")
 
-
+# FREQÜÈNCIA BINÀRIA
 #vectorizer = CountVectorizer()
 #vectorizer = CountVectorizer(max_features=10000)
 #vectorizer = CountVectorizer(max_features=100)
-vectorizer = CountVectorizer(min_df=0.005)  # Manté les paraules que apareixin almenys en el 5% dels docs
+#vectorizer = CountVectorizer(min_df=0.005)  # Manté les paraules que apareixin almenys en el 5% dels docs
 
+#FREQÜÈNCIA TF-IDF
+vectorizer = TfidfVectorizer(min_df=0.005)
 
 # Usar una muestra del dataset
 #sample_train = train.sample(frac=0.5, random_state=42)  # 10% del dataset
@@ -56,10 +59,18 @@ y_test = test['score']
 
 print("y_train,val,test ok")
 
-model = RandomForestClassifier(n_jobs=-1,random_state=42)
-model.fit(x_train, y_train)
+#MODEL RANDOM FOREST
+#model = RandomForestClassifier(n_jobs=-1,random_state=42)
+#model.fit(x_train, y_train)
 #model.fit(X_sample, y_sample)
+
+
+#MODEL NAIVE BAYES
+model = MultinomialNB() 
+model.fit(x_train, y_train)
+
 print("model executat ok")
+
 
 y_pred_validate = model.predict(x_val)
 accuracy_validate = accuracy_score(y_val, y_pred_validate)
