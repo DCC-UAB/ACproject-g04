@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.naive_bayes import ComplementNB
 
 # Carregar datasets
 train_data = pd.read_csv('./data/train_set.csv')
@@ -29,31 +29,27 @@ y_val = val_data['score']
 X_test = vectorizer.transform(test_data['description'])
 y_test = test_data['score']
 
-# Entrenament del model
-model = MultinomialNB()
-model.fit(X_train, y_train)
+# Entrenament amb ComplementNB
+model_complement = ComplementNB()
+model_complement.fit(X_train, y_train)
 
 # Validació
-y_val_pred = model.predict(X_val)
-val_accuracy = accuracy_score(y_val, y_val_pred)
-print(f"Exactitud del model en validació: {val_accuracy:.4f}")
+y_val_pred_complement = model_complement.predict(X_val)
+val_accuracy_complement = accuracy_score(y_val, y_val_pred_complement)
+print(f"Exactitud del model en validació: {val_accuracy_complement:.4f}")
 
 # Test
-y_test_pred = model.predict(X_test)
-test_accuracy = accuracy_score(y_test, y_test_pred)
-print(f"Exactitud del model en test: {test_accuracy:.4f}")
+y_test_pred_complement = model_complement.predict(X_test)
+test_accuracy_complement = accuracy_score(y_test, y_test_pred_complement)
+print(f"Exactitud del model en test: {test_accuracy_complement:.4f}")
 
 
 # Informes finals
 print("Informe de classificació (validació):")
-print(classification_report(y_val, y_val_pred))
+print(classification_report(y_val, y_val_pred_complement))
 
 print("Informe de classificació (test):")
-print(classification_report(y_test, y_test_pred))
+print(classification_report(y_test, y_test_pred_complement))
 
 print("Matriu de Confusió (Test):")
-print(confusion_matrix(y_test, y_test_pred))
-
-
-#PREGUNTA --> EQUILIBRI DE LES DADES
-print(train_data['score'].value_counts())
+print(confusion_matrix(y_test, y_test_pred_complement))
