@@ -4,6 +4,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.naive_bayes import MultinomialNB
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from xgboost import XGBClassifier
 
 print("llibreries importades ok")
 
@@ -59,14 +62,31 @@ y_test = test['score']
 
 print("y_train,val,test ok")
 
+#apliquem SMOTE per sobre-mostrant(generar mostres sintètiques)
+#smote = SMOTE(random_state=42)
+#x_train_balanced, y_train_balanced = smote.fit_resample(x_train, y_train)
+
+#apliquem per fer un sota-mostrant(reduir motres majoritàries)
+#rus = RandomUnderSampler(random_state=42)
+#x_train_balanced, y_train_balanced = rus.fit_resample(x_train, y_train)
+
 #MODEL RANDOM FOREST
 #model = RandomForestClassifier(n_jobs=-1,random_state=42)
+#model = RandomForestClassifier(n_jobs=-1,random_state=42, class_weight='balanced')
 #model.fit(x_train, y_train)
 #model.fit(X_sample, y_sample)
-
+#model.fit(x_train_balanced, y_train_balanced)
 
 #MODEL NAIVE BAYES
-model = MultinomialNB() 
+#model = MultinomialNB() 
+#model.fit(x_train, y_train)
+
+#MODEL XGBoost
+model =XGBClassifier(objective='multi:softmax', num_class=5, eval_metric='mlogloss', random_state=42)
+# Reindexar classes per començar a partir de 0
+y_train = y_train - 1
+y_val = y_val - 1
+y_test = y_test - 1
 model.fit(x_train, y_train)
 
 print("model executat ok")
