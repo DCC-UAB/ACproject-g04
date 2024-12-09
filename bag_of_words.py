@@ -13,6 +13,12 @@ print("llibreries importades ok")
 train = pd.read_csv("data/train_set.csv", encoding='utf-8')
 validate = pd.read_csv("data/val_set.csv", encoding='utf-8')
 test = pd.read_csv("data/test_set.csv", encoding='utf-8')
+
+#score binari
+#train = train[train['score'] != 3]
+#validate = validate[validate['score'] != 3]
+#test = test[test['score'] != 3]
+
 #print(train.head())
 #print(validate.head())
 #print(test.head())
@@ -60,6 +66,12 @@ y_train = train['score']
 y_val = validate['score']
 y_test = test['score']
 
+#PER FER SCORE 0-1
+#y_train = y_train.replace({1: 0, 2: 0, 4: 1, 5: 1})
+#y_val = y_val.replace({1: 0, 2: 0, 4: 1, 5: 1})
+#y_test = y_test.replace({1: 0, 2: 0, 4: 1, 5: 1})
+
+
 print("y_train,val,test ok")
 
 #apliquem SMOTE per sobre-mostrant(generar mostres sintètiques)
@@ -71,9 +83,9 @@ print("y_train,val,test ok")
 #x_train_balanced, y_train_balanced = rus.fit_resample(x_train, y_train)
 
 #MODEL RANDOM FOREST
-#model = RandomForestClassifier(n_jobs=-1,random_state=42)
+model = RandomForestClassifier(n_jobs=-1,random_state=42)
 #model = RandomForestClassifier(n_jobs=-1,random_state=42, class_weight='balanced')
-#model.fit(x_train, y_train)
+model.fit(x_train, y_train)
 #model.fit(X_sample, y_sample)
 #model.fit(x_train_balanced, y_train_balanced)
 
@@ -82,12 +94,16 @@ print("y_train,val,test ok")
 #model.fit(x_train, y_train)
 
 #MODEL XGBoost
-model =XGBClassifier(objective='multi:softmax', num_class=5, eval_metric='mlogloss', random_state=42)
+#model =XGBClassifier(objective='multi:softmax', num_class=5, eval_metric='mlogloss', random_state=42)
 # Reindexar classes per començar a partir de 0
-y_train = y_train - 1
-y_val = y_val - 1
-y_test = y_test - 1
-model.fit(x_train, y_train)
+#y_train = y_train - 1
+#y_val = y_val - 1
+#y_test = y_test - 1
+#Reindexar per binari
+#y_train = y_train - y_train.min()  
+#y_val = y_val - y_val.min()
+#y_test = y_test - y_test.min()
+#model.fit(x_train, y_train)
 
 print("model executat ok")
 
