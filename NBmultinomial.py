@@ -53,3 +53,7 @@ print(classification_report(y_test, y_test_pred))
 
 print("Matriu de Confusió (Test):")
 print(confusion_matrix(y_test, y_test_pred))
+
+
+#PREGUNTA --> EQUILIBRI DE LES DADES
+print(train_data['score'].value_counts())
