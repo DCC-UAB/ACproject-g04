@@ -31,14 +31,14 @@ def clean_text(text):
     # Convertir a minúscules
     text = text.lower()
     
-    # Tokenitzar el text
+    # Tokenitzar el text --> UNITATS MÉS PETITES, SEPARA FRASES EN PARAULES, 
     tokens = word_tokenize(text)
     
-    # Eliminar stop words
+    # Eliminar stop words --> SUPRIMIR PARAULES MOLT COMUNES (THE, IS, ETC)
     stop_words = set(stopwords.words('english'))
     tokens = [word for word in tokens if word not in stop_words]
     
-    # Lematitzar els tokens
+    # Lematitzar els tokens --> TRANSFORMAR EN L'ARREL
     lemmatizer = WordNetLemmatizer()
     tokens = [lemmatizer.lemmatize(word) for word in tokens]
     
