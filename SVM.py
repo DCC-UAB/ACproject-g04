@@ -35,7 +35,7 @@ print("Primers 5 vectors TF-IDF:")
 print(X_train_df.head())
 
 # 4. Entrenar el model SVM amb el conjunt d'entrenament
-svm_model = LinearSVC()
+svm_model = LinearSVC() #regression
 svm_model.fit(X_train_tfidf, y_train)
 
 # 5. Validar el model amb el conjunt de validació
