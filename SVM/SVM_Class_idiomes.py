@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # 1. Carregar els arxius separats
@@ -50,7 +50,8 @@ X_test_tfidf_en = vectorizer_en.transform(X_test_en)
 # 4. Entrenar i avaluar models
 def entrena_i_avaluar(X_train_tfidf, y_train, X_valid_tfidf, y_valid, X_test_tfidf, y_test, idioma):
     # Entrenar SVM
-    model = LinearSVC()
+    #svm_model = LinearSVC() #classification
+    svm_model = LinearSVR() #regression
     model.fit(X_train_tfidf, y_train)
     
     # Validació
