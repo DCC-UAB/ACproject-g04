@@ -1,7 +1,10 @@
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC, LinearSVR
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # 1. Carregar els arxius separats
 data_dir = "data/comparacio_idiomes/"
@@ -47,11 +50,23 @@ X_train_tfidf_en = vectorizer_en.fit_transform(X_train_en)
 X_valid_tfidf_en = vectorizer_en.transform(X_valid_en)
 X_test_tfidf_en = vectorizer_en.transform(X_test_en)
 
-# 4. Entrenar i avaluar models
+# 4. Funció per plotejar la matriu de confusió
+def plot_confusion_matrix(y_true, y_pred, idioma, title="Matriu de Confusió"):
+    cm = confusion_matrix(y_true, y_pred)  # Matriu sense normalitzar
+    cm_percent = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100  # Percentatges per fila
+    labels = sorted(set(y_true))  # Etiquetes úniques ordenades
+    
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm_percent, annot=True, fmt=".2f", cmap="Blues", xticklabels=labels, yticklabels=labels)
+    plt.title(f"{title} - {idioma}")
+    plt.xlabel("Prediccions")
+    plt.ylabel("Valors Reals")
+    plt.show()
+
+# 5. Entrenar i avaluar models
 def entrena_i_avaluar(X_train_tfidf, y_train, X_valid_tfidf, y_valid, X_test_tfidf, y_test, idioma):
     # Entrenar SVM
-    #svm_model = LinearSVC() #classification
-    svm_model = LinearSVR() #regression
+    model = LinearSVC()
     model.fit(X_train_tfidf, y_train)
     
     # Validació
@@ -67,8 +82,10 @@ def entrena_i_avaluar(X_train_tfidf, y_train, X_valid_tfidf, y_valid, X_test_tfi
     # Informes
     print(f"\nClassification Report ({idioma} - Test):")
     print(classification_report(y_test, y_test_pred))
+    
+    # Matriu de confusió
     print(f"Matriu de Confusió ({idioma} - Test):")
-    print(confusion_matrix(y_test, y_test_pred))
+    plot_confusion_matrix(y_test, y_test_pred, idioma, title="Matriu de Confusió")
 
 # Entrenar i avaluar per a espanyol
 entrena_i_avaluar(X_train_tfidf_es, y_train_es, X_valid_tfidf_es, y_valid_es, X_test_tfidf_es, y_test_es, "Espanyol")
