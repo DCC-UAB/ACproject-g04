@@ -105,7 +105,7 @@ def plot_confusion_matrix(y_true, y_pred, labels, model_name):
     # Plotejar
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=annotations, fmt="", cmap="Blues", xticklabels=labels, yticklabels=labels)
-    plt.title("Matriu de Confusió: {model_name}")
+    plt.title(f"Matriu de Confusió: {model_name}")
     plt.ylabel("Valor Real")
     plt.xlabel("Predicció")
     plt.show()
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
-        (RandomForestRegressor(n_estimators=100, max_depth=5, min_samples_split=10, random_state=42), "RandomForest Regressor"),
+        (RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42), "RandomForest Regressor"),
         (XGBRegressor(n_estimators=100, random_state=42), "XGBoost Regressor")
     ]
     for model, model_name in regressors:
