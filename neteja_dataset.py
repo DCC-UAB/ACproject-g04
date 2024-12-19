@@ -1,74 +1,53 @@
 import pandas as pd
 import re
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords, words
-from nltk.stem import WordNetLemmatizer
 import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
 
-# Descarregar les dades necessàries per NLTK
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('corpora/wordnet')
-    nltk.data.find('corpora/stopwords')
-    nltk.data.find('corpora/omw-1.4')
-    nltk.data.find('corpora/words')
-except LookupError:
-    nltk.download('punkt')
-    nltk.download('wordnet')
-    nltk.download('stopwords')
-    nltk.download('omw-1.4')
-    nltk.download('words')
+# Descarregar recursos de NLTK
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 # Carregar el dataset
-data_path = "data/TripAdvisor_reviews.csv"  
-df = pd.read_csv(data_path)
-print(df.head())
+df = pd.read_csv("data/TripAdvisor_reviews.csv")
 
-# Obtenir el vocabulari en anglès de NLTK
-english_vocab = set(words.words())
+# Inicialitzar el lematitzador i la llista de paraules buides (stop words)
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english'))
 
-# Funció de neteja del text
 def clean_text(text):
-    # Eliminar caracters no ASCII (mantenir només lletres)
-    text = re.sub(r"[^\x20-\x7E]", "", text)  # Caràcters ASCII imprimibles
-    text = re.sub(r"[^a-zA-Z\s]", "", text)  # Mantenir només lletres i espais
+    # Assegurar-nos que el text sigui una cadena (string)
+    if not isinstance(text, str):
+        text = str(text)  # Convertir a cadena si no ho és
+    
+    # Eliminar caràcters no ASCII, comes, punts i números
+    text = re.sub(r'[^\x00-\x7F]+', '', text)  # Eliminar caràcters no ASCII
+    text = re.sub(r'[^\w\s]', '', text)  # Eliminar signes de puntuació
+    text = re.sub(r'\d+', '', text)  # Eliminar números
     
     # Convertir a minúscules
     text = text.lower()
     
-    # Tokenitzar el text --> UNITATS MÉS PETITES, SEPARA FRASES EN PARAULES, 
+    # Tokenitzar el text
     tokens = word_tokenize(text)
     
-    # Eliminar stop words --> SUPRIMIR PARAULES MOLT COMUNES (THE, IS, ETC)
-    stop_words = set(stopwords.words('english'))
-    tokens = [word for word in tokens if word not in stop_words]
+    # Eliminar les paraules buides (stop words) i lematitzar
+    cleaned_tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stop_words]
     
-    # Filtrar paraules que no estan al vocabulari anglès
-    tokens = [word for word in tokens if word in english_vocab]
+    # Unir les paraules per formar el text net
+    cleaned_text = ' '.join(cleaned_tokens)
     
-    # Lematitzar els tokens --> TRANSFORMAR EN L'ARREL
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(word) for word in tokens]
-    
-    # Reconstruir el text net
-    cleaned_text = " ".join(tokens)
     return cleaned_text
 
-# Substituir valors no vàlids (NaN) per una cadena buida
-df["review_full"] = df["review_full"].fillna("").astype(str)
+# Assegurar-nos que no hi hagi valors nuls a la columna 'review_full'
+df['review_full'] = df['review_full'].fillna('')
 
-# Aplicar la funció de neteja a la columna de ressenyes
-df["cleaned_review"] = df["review_full"].apply(clean_text)
+# Aplicar la funció de neteja a la columna 'review_full'
+df['review_full'] = df['review_full'].apply(clean_text)
 
-# Renombrar la columna 'cleaned_review' a 'review_full' per substituir el contingut original
-df["review_full"] = df["cleaned_review"]
+# Guardar el dataset net en un nou fitxer CSV
+df.to_csv("data/clean_dataset.csv", columns=['rating_review', 'review_full'], index=False)
 
-# Eliminar la columna 'cleaned_review' (ja no és necessària)
-df.drop(columns=["cleaned_review"], inplace=True)
-
-# Guardar el dataset netejat en un nou fitxer CSV (només amb les columnes 'rating_review' i 'review_full')
-output_path = "data/cleaned_dataset.csv"
-df.to_csv(output_path, index=False, columns=["rating_review", "review_full"])
-
-# Mostrar un exemple de les dades netejades
-print(df.head())
+print("Neteja completada i fitxer CSV guardat com 'dataset_limpio.csv'")
