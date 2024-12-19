@@ -5,7 +5,8 @@ from sklearn.svm import LinearSVR
 from sklearn.naive_bayes import MultinomialNB, ComplementNB
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
-from sklearn.metrics import mean_squared_error, r2_score, confusion_matrix, accuracy_score, classification_report
+from sklearn.metrics import (mean_squared_error, mean_absolute_error, r2_score, 
+                             confusion_matrix, accuracy_score, classification_report)
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -58,12 +59,18 @@ def entrenar_avaluar_regressor(model, model_name, X_train, y_train, X_val, y_val
 
     # Mètriques de regressió
     val_mse = mean_squared_error(y_val, y_val_pred)
+    val_rmse = np.sqrt(val_mse)
+    val_mae = mean_absolute_error(y_val, y_val_pred)
     val_r2 = r2_score(y_val, y_val_pred)
-    print(f"Validació - MSE: {val_mse:.4f}, R2: {val_r2:.4f}")
+
+    print(f"Validació - MSE: {val_mse:.4f}, RMSE: {val_rmse:.4f}, MAE: {val_mae:.4f}, R2: {val_r2:.4f}")
 
     test_mse = mean_squared_error(y_test, y_test_pred)
+    test_rmse = np.sqrt(test_mse)
+    test_mae = mean_absolute_error(y_test, y_test_pred)
     test_r2 = r2_score(y_test, y_test_pred)
-    print(f"Test - MSE: {test_mse:.4f}, R2: {test_r2:.4f}")
+
+    print(f"Test - MSE: {test_mse:.4f}, RMSE: {test_rmse:.4f}, MAE: {test_mae:.4f}, R2: {test_r2:.4f}")
 
 # Funció per entrenar i avaluar classificadors amb matriu de confusió
 def entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test):
@@ -78,10 +85,17 @@ def entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y
     # Prediccions
     y_test_pred = model.predict(X_test)
     test_accuracy = accuracy_score(y_test, y_test_pred)
-    print(f"Exactitud en test: {test_accuracy:.4f}")
 
+    # Informació detallada
+    print(f"Exactitud en test: {test_accuracy:.4f}")
     print("\nClassification Report (Test):")
+    report = classification_report(y_test, y_test_pred, output_dict=True)
     print(classification_report(y_test, y_test_pred))
+
+    # Mostrar mètriques específiques
+    print(f"Precision: {report['weighted avg']['precision']:.4f}")
+    print(f"Recall: {report['weighted avg']['recall']:.4f}")
+    print(f"F1-Score: {report['weighted avg']['f1-score']:.4f}")
 
     # Matriu de confusió
     print("Matriu de Confusió (Test):")
@@ -120,7 +134,7 @@ if __name__ == "__main__":
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
-        (RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42), "RandomForest Regressor"),
+        (RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
         (XGBRegressor(n_estimators=100, random_state=42), "XGBoost Regressor")
     ]
     for model, model_name in regressors:
