@@ -31,7 +31,7 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
 
     # Vectorització
     if vectorizer_type == "tfidf":
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(max_features=max_features)
     elif vectorizer_type == "count":
         vectorizer = CountVectorizer(max_features=max_features)
     else:
@@ -41,8 +41,12 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
     X_val = vectorizer.transform(val_data['description'])
     X_test = vectorizer.transform(test_data['description'])
 
-    # Mostrar las primeras 20 palabras
-    print(vectorizer.get_feature_names_out()[:20])
+    # Mostrar les primeres i últimes 10 paraules del vocabulari
+    vocab = vectorizer.get_feature_names_out()
+    print(f"Primeres 10 paraules del vocabulari:\n{vocab[:10]}")
+    print(f"\nÚltimes 10 paraules del vocabulari:\n{vocab[-10:]}")
+    #Longitud vector
+    print(len(vocab))
 
     return X_train, y_train, X_val, y_val, X_test, y_test, vectorizer
 
@@ -150,3 +154,4 @@ if __name__ == "__main__":
     ]
     for model, model_name in classificadors:
         entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test)
+        
