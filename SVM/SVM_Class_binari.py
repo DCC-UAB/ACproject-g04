@@ -63,8 +63,15 @@ def plot_confusion_matrix(y_true, y_pred, title="Matriu de Confusió"):
     cm_percent = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100  # Percentatges per fila
     labels = ["Negatiu", "Positiu"]  # Etiquetes per a classificació binària
     
+    # Crear anotacions combinant nombres i percentatges
+    annotations = np.empty_like(cm).astype(str)
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            annotations[i, j] = f"{cm[i, j]}\n({cm_percent[i, j]:.2f}%)"
+
+    # Plotejar la matriu de confusió
     plt.figure(figsize=(6, 5))
-    sns.heatmap(cm_percent, annot=True, fmt=".2f", cmap="Blues", xticklabels=labels, yticklabels=labels)
+    sns.heatmap(cm, annot=annotations, fmt="", cmap="Blues", xticklabels=labels, yticklabels=labels)
     plt.title(title)
     plt.xlabel("Prediccions")
     plt.ylabel("Valors Reals")
