@@ -7,14 +7,14 @@ from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import (mean_squared_error, mean_absolute_error, r2_score, 
                              confusion_matrix, accuracy_score, classification_report)
-from imblearn.over_sampling import SMOTE
 import seaborn as sns
 import matplotlib.pyplot as plt
+from imblearn.over_sampling import SMOTE
 
 # Funció per carregar i preparar les dades
-def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000, apply_smote=False):
+def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
     """
-    Carrega, vectoritza i, si cal, balanceja les dades amb SMOTE.
+    Carrega, neteja i vectoritza les dades.
     """
     # Carregar dades
     train_data = pd.read_csv(data_dir + "train_set.csv")
@@ -41,13 +41,6 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000, apply_sm
     X_train = vectorizer.fit_transform(train_data['description'])
     X_val = vectorizer.transform(val_data['description'])
     X_test = vectorizer.transform(test_data['description'])
-
-    # Aplicar SMOTE al conjunt d'entrenament si es requereix
-    if apply_smote:
-        smote = SMOTE(random_state=42)
-        X_train, y_train = smote.fit_resample(X_train, y_train)
-        print("Distribució de classes després del balancejament (train):")
-        print(pd.Series(y_train).value_counts())
 
     return X_train, y_train, X_val, y_val, X_test, y_test, vectorizer
 
@@ -136,8 +129,20 @@ def plot_confusion_matrix(y_true, y_pred, labels, model_name):
 if __name__ == "__main__":
     data_dir = "data/"
 
-    # Preparar dades amb vectorització i balancejament amb SMOTE
-    X_train, y_train, X_val, y_val, X_test, y_test, vectorizer = prepara_dades(data_dir, vectorizer_type="tfidf", apply_smote=True)
+    # Preparar dades
+    X_train, y_train, X_val, y_val, X_test, y_test, vectorizer = prepara_dades(data_dir, vectorizer_type="tfidf")
+
+    # Comptar les instàncies per a cada classe abans del balancejament
+    print("Distribució de classes abans del balancejament (train):")
+    print(pd.Series(y_train).value_counts())
+
+    # Balancejament amb SMOTE
+    smote = SMOTE(random_state=42)
+    X_train, y_train = smote.fit_resample(X_train, y_train)
+
+    # Comptar les instàncies per a cada classe després del balancejament
+    print("Distribució de classes després del balancejament (train):")
+    print(pd.Series(y_train).value_counts())
 
     # REGRESSORS
     regressors = [
@@ -155,3 +160,4 @@ if __name__ == "__main__":
     ]
     for model, model_name in classificadors:
         entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test)
+
