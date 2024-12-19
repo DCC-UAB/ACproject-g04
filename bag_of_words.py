@@ -11,9 +11,9 @@ from xgboost import XGBClassifier
 print("llibreries importades ok")
 
 #original
-#train = pd.read_csv("data/train_set.csv", encoding='utf-8')
-#validate = pd.read_csv("data/val_set.csv", encoding='utf-8')
-#test = pd.read_csv("data/test_set.csv", encoding='utf-8')
+train = pd.read_csv("data/train_set.csv", encoding='utf-8')
+validate = pd.read_csv("data/val_set.csv", encoding='utf-8')
+test = pd.read_csv("data/test_set.csv", encoding='utf-8')
 
 #COMPARAR IDIOMES
 #español 
@@ -22,9 +22,9 @@ print("llibreries importades ok")
 #test = pd.read_csv("data/comparacio_idiomes/ressenyes_es_test.csv", encoding='utf-8')
 
 #inglés
-train = pd.read_csv("data/comparacio_idiomes/ressenyes_en_train.csv", encoding='utf-8')
-validate = pd.read_csv("data/comparacio_idiomes/ressenyes_en_val.csv", encoding='utf-8')
-test = pd.read_csv("data/comparacio_idiomes/ressenyes_en_test.csv", encoding='utf-8')
+#train = pd.read_csv("data/comparacio_idiomes/ressenyes_en_train.csv", encoding='utf-8')
+#validate = pd.read_csv("data/comparacio_idiomes/ressenyes_en_val.csv", encoding='utf-8')
+#test = pd.read_csv("data/comparacio_idiomes/ressenyes_en_test.csv", encoding='utf-8')
 
 
 #score binari
