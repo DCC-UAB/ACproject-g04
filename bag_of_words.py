@@ -33,7 +33,7 @@ test = pd.read_csv("data/test_set.csv", encoding='utf-8')
 #test = test[test['score'] != 3]
 
 #print(train.head())
-#print(validate.head())
+#print(validate.head())(
 #print(test.head())
 # Buscar valors problemàtics
 #print("Valores únicos en 'description':")
@@ -47,7 +47,7 @@ print("càrrega arxius ok")
 #vectorizer = CountVectorizer(min_df=0.005)  # Manté les paraules que apareixin almenys en el 5% dels docs
 
 #FREQÜÈNCIA TF-IDF
-vectorizer = TfidfVectorizer(min_df=0.005)
+vectorizer = TfidfVectorizer(min_df= 0.04)
 
 # Usar una muestra del dataset
 #sample_train = train.sample(frac=0.5, random_state=42)  # 10% del dataset
@@ -96,9 +96,9 @@ print("y_train,val,test ok")
 #x_train_balanced, y_train_balanced = rus.fit_resample(x_train, y_train)
 
 #MODEL RANDOM FOREST
-model = RandomForestClassifier(n_jobs=-1,random_state=42)
+#model = RandomForestClassifier(n_jobs=-1,random_state=42)
 #model = RandomForestClassifier(n_jobs=-1,random_state=42, class_weight='balanced')
-model.fit(x_train, y_train)
+#model.fit(x_train, y_train)
 #model.fit(X_sample, y_sample)
 #model.fit(x_train_balanced, y_train_balanced)
 

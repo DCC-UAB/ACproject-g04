@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords, words
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import nltk
 
@@ -11,21 +11,16 @@ try:
     nltk.data.find('corpora/wordnet')
     nltk.data.find('corpora/stopwords')
     nltk.data.find('corpora/omw-1.4')
-    nltk.data.find('corpora/words')
 except LookupError:
     nltk.download('punkt')
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('omw-1.4')
-    nltk.download('words')
 
 # Carregar el dataset
 data_path = "data/TripAdvisor_reviews.csv"  
 df = pd.read_csv(data_path)
 print(df.head())
-
-# Obtenir el vocabulari en anglès de NLTK
-english_vocab = set(words.words())
 
 # Funció de neteja del text
 def clean_text(text):
@@ -42,9 +37,6 @@ def clean_text(text):
     # Eliminar stop words --> SUPRIMIR PARAULES MOLT COMUNES (THE, IS, ETC)
     stop_words = set(stopwords.words('english'))
     tokens = [word for word in tokens if word not in stop_words]
-    
-    # Filtrar paraules que no estan al vocabulari anglès
-    tokens = [word for word in tokens if word in english_vocab]
     
     # Lematitzar els tokens --> TRANSFORMAR EN L'ARREL
     lemmatizer = WordNetLemmatizer()
