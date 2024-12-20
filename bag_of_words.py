@@ -44,10 +44,10 @@ print("càrrega arxius ok")
 #vectorizer = CountVectorizer()
 #vectorizer = CountVectorizer(max_features=10000)
 #vectorizer = CountVectorizer(max_features=100)
-#vectorizer = CountVectorizer(min_df=0.005)  # Manté les paraules que apareixin almenys en el 5% dels docs
+#vectorizer = CountVectorizer()  # Manté les paraules que apareixin almenys en el 5% dels docs
 
 #FREQÜÈNCIA TF-IDF
-vectorizer = TfidfVectorizer(min_df= 0.04)
+vectorizer = TfidfVectorizer(min_df= 0.005)
 
 # Usar una muestra del dataset
 #sample_train = train.sample(frac=0.5, random_state=42)  # 10% del dataset
