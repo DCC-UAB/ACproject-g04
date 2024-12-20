@@ -6,7 +6,7 @@ from sklearn.naive_bayes import MultinomialNB, ComplementNB
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import (mean_squared_error, mean_absolute_error, r2_score, 
-                             confusion_matrix, accuracy_score, classification_report)
+                             confusion_matrix, accuracy_score, classification_report, roc_curve, auc, roc_auc_score)
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -88,6 +88,31 @@ def entrenar_avaluar_regressor(model, model_name, X_train, y_train, X_val, y_val
 
     print(f"Test - MSE: {test_mse:.4f}, RMSE: {test_rmse:.4f}, MAE: {test_mae:.4f}, R2: {test_r2:.4f}")
 
+    # Curva ROC per a la classificació binària
+    # Aquí tractem les prediccions com a probabilitats per a la classe positiva (1)
+    if hasattr(model, "predict_proba"):
+        y_test_prob = model.predict_proba(X_test)[:, 1]  # Probabilitats per a la classe 1
+    elif hasattr(model, "decision_function"):
+        y_test_prob = model.decision_function(X_test)  # Si el model té 'decision_function'
+    else:
+        y_test_prob = y_test_pred  # Si no tenim probabilitats, utilitzem les prediccions
+
+    # Calcular la ROC curve
+    fpr, tpr, thresholds = roc_curve(y_test, y_test_prob)
+    roc_auc = auc(fpr, tpr)
+
+    # Plotejar la ROC curve
+    plt.figure(figsize=(8, 6))
+    plt.plot(fpr, tpr, color='b', label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', linestyle='--')  # Diagonal de la classificació aleatòria
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('Taxa de Falsos Positius (FPR)')
+    plt.ylabel('Taxa de Veritables Positius (TPR)')
+    plt.title(f'Curva ROC: {model_name}')
+    plt.legend(loc='lower right')
+    plt.show()
+
 # Funció per entrenar i avaluar classificadors amb matriu de confusió
 def entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test, transformacio):
     """
@@ -117,6 +142,31 @@ def entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y
     print("Matriu de Confusió (Test):")
     unique_labels = sorted(set(y_test))
     plot_confusion_matrix(y_test, y_test_pred, unique_labels, model_name, transformacio)
+
+    # Curva ROC per a la classificació binària
+    # Aquí tractem les prediccions com a probabilitats per a la classe positiva (1)
+    if hasattr(model, "predict_proba"):
+        y_test_prob = model.predict_proba(X_test)[:, 1]  # Probabilitats per a la classe 1
+    elif hasattr(model, "decision_function"):
+        y_test_prob = model.decision_function(X_test)  # Si el model té 'decision_function'
+    else:
+        y_test_prob = y_test_pred  # Si no tenim probabilitats, utilitzem les prediccions
+
+    # Calcular la ROC curve
+    fpr, tpr, thresholds = roc_curve(y_test, y_test_prob)
+    roc_auc = auc(fpr, tpr)
+
+    # Plotejar la ROC curve
+    plt.figure(figsize=(8, 6))
+    plt.plot(fpr, tpr, color='b', label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', linestyle='--')  # Diagonal de la classificació aleatòria
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('Taxa de Falsos Positius (FPR)')
+    plt.ylabel('Taxa de Veritables Positius (TPR)')
+    plt.title(f'Curva ROC: {model_name}')
+    plt.legend(loc='lower right')
+    plt.show()
 
 # Funció per plotejar la matriu de confusió
 def plot_confusion_matrix(y_true, y_pred, labels, model_name, transformacio):
@@ -148,14 +198,14 @@ if __name__ == "__main__":
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
-        #(RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
+        (RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
         (XGBRegressor(n_estimators=100, random_state=42), "XGBoost Regressor")
     ]
 
     # CLASSIFICADORS
     classificadors = [
         (MultinomialNB(), "MultinomialNB")
-        #(ComplementNB(), "ComplementNB")
+        (ComplementNB(), "ComplementNB")
     ]
 
     # Versió 1: 1 i 2 --> 0, 4 i 5 --> 1
