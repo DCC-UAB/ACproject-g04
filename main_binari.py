@@ -154,8 +154,8 @@ if __name__ == "__main__":
 
     # CLASSIFICADORS
     classificadors = [
-        (MultinomialNB(), "MultinomialNB"),
-        (ComplementNB(), "ComplementNB")
+        (MultinomialNB(), "MultinomialNB")
+        #(ComplementNB(), "ComplementNB")
     ]
 
     # Versió 1: 1 i 2 --> 0, 4 i 5 --> 1

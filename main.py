@@ -134,7 +134,7 @@ if __name__ == "__main__":
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
-        (RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
+        #(RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
         (XGBRegressor(n_estimators=100, random_state=42), "XGBoost Regressor")
     ]
     for model, model_name in regressors:
