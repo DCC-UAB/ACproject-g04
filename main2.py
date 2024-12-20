@@ -58,64 +58,64 @@ def entrenar_avaluar_regressor(model, model_name, X_train, y_train, X_val, y_val
     y_test_pred = model.predict(X_test)
 
     import numpy as np
-import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
 
-# Mètriques de regressió
-val_mse = mean_squared_error(y_val, y_val_pred)
-val_rmse = np.sqrt(val_mse)
-val_mae = mean_absolute_error(y_val, y_val_pred)
-val_r2 = r2_score(y_val, y_val_pred)
+    # Mètriques de regressió
+    val_mse = mean_squared_error(y_val, y_val_pred)
+    val_rmse = np.sqrt(val_mse)
+    val_mae = mean_absolute_error(y_val, y_val_pred)
+    val_r2 = r2_score(y_val, y_val_pred)
 
-test_mse = mean_squared_error(y_test, y_test_pred)
-test_rmse = np.sqrt(test_mse)
-test_mae = mean_absolute_error(y_test, y_test_pred)
-test_r2 = r2_score(y_test, y_test_pred)
+    test_mse = mean_squared_error(y_test, y_test_pred)
+    test_rmse = np.sqrt(test_mse)
+    test_mae = mean_absolute_error(y_test, y_test_pred)
+    test_r2 = r2_score(y_test, y_test_pred)
 
-# Resultats de les mètriques
-print(f"Validació - MSE: {val_mse:.4f}, RMSE: {val_rmse:.4f}, MAE: {val_mae:.4f}, R2: {val_r2:.4f}")
-print(f"Test - MSE: {test_mse:.4f}, RMSE: {test_rmse:.4f}, MAE: {test_mae:.4f}, R2: {test_r2:.4f}")
+    # Resultats de les mètriques
+    print(f"Validació - MSE: {val_mse:.4f}, RMSE: {val_rmse:.4f}, MAE: {val_mae:.4f}, R2: {val_r2:.4f}")
+    print(f"Test - MSE: {test_mse:.4f}, RMSE: {test_rmse:.4f}, MAE: {test_mae:.4f}, R2: {test_r2:.4f}")
 
-# Gràfic: Valors predits vs Valors reals
-plt.figure(figsize=(8, 6))
-plt.scatter(y_val, y_val_pred, alpha=0.5, label='Validació', color='blue')
-plt.plot([min(y_val), max(y_val)], [min(y_val), max(y_val)], color='red', linestyle='--', label='Perfecte ajust')
-plt.xlabel("Valors Reals")
-plt.ylabel("Valors Predits")
-plt.title("Comparació entre Valors Reals i Predits (Validació)")
-plt.legend()
-plt.show()
+    # Gràfic: Valors predits vs Valors reals
+    plt.figure(figsize=(8, 6))
+    plt.scatter(y_val, y_val_pred, alpha=0.5, label='Validació', color='blue')
+    plt.plot([min(y_val), max(y_val)], [min(y_val), max(y_val)], color='red', linestyle='--', label='Perfecte ajust')
+    plt.xlabel("Valors Reals")
+    plt.ylabel("Valors Predits")
+    plt.title("Comparació entre Valors Reals i Predits (Validació)")
+    plt.legend()
+    plt.show()
 
-plt.figure(figsize=(8, 6))
-plt.scatter(y_test, y_test_pred, alpha=0.5, label='Test', color='orange')
-plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--', label='Perfecte ajust')
-plt.xlabel("Valors Reals")
-plt.ylabel("Valors Predits")
-plt.title("Comparació entre Valors Reals i Predits (Test)")
-plt.legend()
-plt.show()
+    plt.figure(figsize=(8, 6))
+    plt.scatter(y_test, y_test_pred, alpha=0.5, label='Test', color='orange')
+    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--', label='Perfecte ajust')
+    plt.xlabel("Valors Reals")
+    plt.ylabel("Valors Predits")
+    plt.title("Comparació entre Valors Reals i Predits (Test)")
+    plt.legend()
+    plt.show()
 
-# Gràfic: Distribució d'Errors Absoluts
-val_absolute_errors = np.abs(y_val - y_val_pred)
-test_absolute_errors = np.abs(y_test - y_test_pred)
+    # Gràfic: Distribució d'Errors Absoluts
+    val_absolute_errors = np.abs(y_val - y_val_pred)
+    test_absolute_errors = np.abs(y_test - y_test_pred)
 
-plt.figure(figsize=(8, 6))
-plt.hist(val_absolute_errors, bins=30, alpha=0.7, color='blue', label='Validació')
-plt.hist(test_absolute_errors, bins=30, alpha=0.7, color='orange', label='Test')
-plt.xlabel("Error Absolut")
-plt.ylabel("Nombre d'Instàncies")
-plt.title("Distribució d'Errors Absoluts")
-plt.legend()
-plt.show()
+    plt.figure(figsize=(8, 6))
+    plt.hist(val_absolute_errors, bins=30, alpha=0.7, color='blue', label='Validació')
+    plt.hist(test_absolute_errors, bins=30, alpha=0.7, color='orange', label='Test')
+    plt.xlabel("Error Absolut")
+    plt.ylabel("Nombre d'Instàncies")
+    plt.title("Distribució d'Errors Absoluts")
+    plt.legend()
+    plt.show()
 
-# Gràfic: Evolució dels valors predits
-plt.figure(figsize=(12, 6))
-plt.plot(range(len(y_test)), y_test, label="Valors Reals", color='blue')
-plt.plot(range(len(y_test)), y_test_pred, label="Valors Predits", color='orange')
-plt.xlabel("Índex de Mostra")
-plt.ylabel("Score")
-plt.title("Evolució dels Valors Reals i Predits (Test)")
-plt.legend()
-plt.show()
+    # Gràfic: Evolució dels valors predits
+    plt.figure(figsize=(12, 6))
+    plt.plot(range(len(y_test)), y_test, label="Valors Reals", color='blue')
+    plt.plot(range(len(y_test)), y_test_pred, label="Valors Predits", color='orange')
+    plt.xlabel("Índex de Mostra")
+    plt.ylabel("Score")
+    plt.title("Evolució dels Valors Reals i Predits (Test)")
+    plt.legend()
+    plt.show()
 
 # Funció per entrenar i avaluar classificadors amb matriu de confusió
 def entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test):
