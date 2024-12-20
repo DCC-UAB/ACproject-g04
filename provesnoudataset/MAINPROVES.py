@@ -31,7 +31,7 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
 
     # Vectorització
     if vectorizer_type == "tfidf":
-        vectorizer = TfidfVectorizer(max_features=max_features)
+        vectorizer = TfidfVectorizer()
     elif vectorizer_type == "count":
         vectorizer = CountVectorizer(max_features=max_features)
     else:
@@ -43,8 +43,8 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
 
     # Mostrar les primeres i últimes 10 paraules del vocabulari
     vocab = vectorizer.get_feature_names_out()
-    print(f"Primeres 10 paraules del vocabulari:\n{vocab[:10]}")
-    print(f"\nÚltimes 10 paraules del vocabulari:\n{vocab[-10:]}")
+    print(f"Primeres 10 paraules del vocabulari:\n{vocab[:20]}")
+    print(f"\nÚltimes 10 paraules del vocabulari:\n{vocab[-20:]}")
     #Longitud vector
     print(len(vocab))
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
     # Preparar dades
     X_train, y_train, X_val, y_val, X_test, y_test, vectorizer = prepara_dades(data_dir, vectorizer_type="tfidf")
-
+"""
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
@@ -154,4 +154,4 @@ if __name__ == "__main__":
     ]
     for model, model_name in classificadors:
         entrenar_avaluar_classificador(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test)
-        
+"""

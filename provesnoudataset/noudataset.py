@@ -5,6 +5,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords, words
 from nltk.stem import WordNetLemmatizer
 import nltk
+from nltk import pos_tag
+from nltk.corpus import wordnet
 
 # Descarregar les dades necessàries per NLTK
 try:
@@ -13,12 +15,15 @@ try:
     nltk.data.find('corpora/stopwords')
     nltk.data.find('corpora/omw-1.4')
     nltk.data.find('corpora/words')
+    nltk.data.find('taggers/averaged_perceptron_tagger')
 except LookupError:
     nltk.download('punkt')
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('omw-1.4')
     nltk.download('words')
+    nltk.download('averaged_perceptron_tagger')  # Afegit aquí
+
 
 
 # Carregar el dataset
@@ -52,8 +57,23 @@ print("DATASET PREPARAT PER NETEJAR")
 
 #NETEJAR
 df = df_filtered
-# Obtenir el vocabulari en anglès de NLTK
+# Obtenir el vocabulari en anglès
 english_vocab = set(words.words())
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english'))
+
+# Funció per convertir etiquetes de NLTK a WordNet
+def get_wordnet_pos(tag):
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordnet.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN  # Per defecte, assumim "noun"
 
 # Funció de neteja del text
 def clean_text(text):
@@ -61,25 +81,25 @@ def clean_text(text):
     text = re.sub(r"[^\x20-\x7E]", "", text)  # Caràcters ASCII imprimibles
     text = re.sub(r"[^a-zA-Z\s]", "", text)  # Mantenir només lletres i espais
     
-    # Convertir a minúscules
+    # Convertir a minúscules i tokenitzar
     text = text.lower()
-    
-    # Tokenitzar el text --> UNITATS MÉS PETITES, SEPARA FRASES EN PARAULES, 
     tokens = word_tokenize(text)
     
-    # Eliminar stop words --> SUPRIMIR PARAULES MOLT COMUNES (THE, IS, ETC)
-    stop_words = set(stopwords.words('english'))
+    # Eliminar stop words
     tokens = [word for word in tokens if word not in stop_words]
     
-    # Filtrar paraules que no estan al vocabulari anglès
-    tokens = [word for word in tokens if word in english_vocab]
+    # Etiquetar les paraules (POS tagging)
+    tagged_tokens = pos_tag(tokens)
     
-    # Lematitzar els tokens --> TRANSFORMAR EN L'ARREL
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    # Aplicar lematització amb POS
+    lemmatized_tokens = [lemmatizer.lemmatize(word, get_wordnet_pos(tag)) 
+                         for word, tag in tagged_tokens]
+    
+    # Filtrar paraules que no estan al vocabulari anglès
+    #lemmatized_tokens = [word for word in lemmatized_tokens if word in english_vocab]
     
     # Reconstruir el text net
-    cleaned_text = " ".join(tokens)
+    cleaned_text = " ".join(lemmatized_tokens)
     return cleaned_text
 
 # Substituir valors no vàlids (NaN) per una cadena buida
