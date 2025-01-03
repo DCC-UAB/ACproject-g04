@@ -9,6 +9,27 @@ from sklearn.metrics import (mean_squared_error, mean_absolute_error, r2_score,
                              confusion_matrix, accuracy_score, classification_report)
 import seaborn as sns
 import matplotlib.pyplot as plt
+import re
+
+# Funció per obtenir els n-grams més comuns
+def get_top_ngrams(corpus, n=2, top_k=10):
+    """
+    Obté els n-grams més comuns d'un corpus.
+    """
+    vectorizer = CountVectorizer(ngram_range=(n, n), stop_words='english')
+    ngram_counts = vectorizer.fit_transform(corpus)
+    ngram_sums = ngram_counts.sum(axis=0)
+    ngram_freq = [(word, ngram_sums[0, idx]) for word, idx in vectorizer.vocabulary_.items()]
+    ngram_freq = sorted(ngram_freq, key=lambda x: x[1], reverse=True)
+    return ngram_freq[:top_k]
+
+# Funció per eliminar n-grams comuns
+def remove_common_phrases(text, common_phrases):
+    """
+    Elimina frases comunes d'un text donades en una llista.
+    """
+    pattern = r'\b(?:' + '|'.join(re.escape(phrase) for phrase in common_phrases) + r')\b'
+    return re.sub(pattern, '', text, flags=re.IGNORECASE)
 
 # Funció per carregar i preparar les dades
 def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
@@ -23,6 +44,26 @@ def prepara_dades(data_dir, vectorizer_type="tfidf", max_features=5000):
     # Substituir NaN per cadenes buides i convertir a string
     for dataset in [train_data, val_data, test_data]:
         dataset['description'] = dataset['description'].fillna('').astype(str)
+
+    # Identificar i eliminar n-grams comuns només en el conjunt d'entrenament
+    train_pos = train_data[train_data['score'].isin([4, 5])]['description']
+    train_neg = train_data[train_data['score'].isin([1, 2])]['description']
+
+    # Analitzar n-grams
+    print("\nAnalitzant bigrames i trigrames més comuns...")
+    positive_bigrams = get_top_ngrams(train_pos, n=2, top_k=10)
+    negative_bigrams = get_top_ngrams(train_neg, n=2, top_k=10)
+    positive_trigrams = get_top_ngrams(train_pos, n=3, top_k=10)
+    negative_trigrams = get_top_ngrams(train_neg, n=3, top_k=10)
+
+    # Combinar llistes d'n-grams comuns
+    common_phrases = [phrase for phrase, _ in positive_bigrams] + [phrase for phrase, _ in negative_bigrams]
+    common_phrases += [phrase for phrase, _ in positive_trigrams] + [phrase for phrase, _ in negative_trigrams]
+
+    print(f"\nFrases comunes identificades: {common_phrases}")
+
+    # Eliminar frases comunes del conjunt d'entrenament
+    train_data['description'] = train_data['description'].apply(lambda x: remove_common_phrases(x, common_phrases))
 
     # Etiquetes
     y_train = train_data['score']
@@ -134,7 +175,7 @@ if __name__ == "__main__":
     # REGRESSORS
     regressors = [
         (LinearSVR(), "SVM Regressor"),
-        #(RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
+        (RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42), "RandomForest Regressor"),
         (XGBRegressor(n_estimators=100, random_state=42), "XGBoost Regressor")
     ]
     for model, model_name in regressors:
